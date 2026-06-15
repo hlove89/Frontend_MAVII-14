@@ -1,0 +1,237 @@
+.bell-wrapper {
+    position: relative;
+}
+
+.bell-icon-btn {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    transition: background 0.15s;
+}
+
+.bell-icon-btn:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.notif-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #E24B4A;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    padding: 0 3px;
+}
+
+.notif-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 320px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    z-index: 9999999;
+    overflow: hidden;
+}
+
+.notif-dropdown.show {
+    display: block;
+}
+
+.notif-dropdown-header {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.notif-dropdown-header .notif-actions-icon {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.notif-dropdown-header a {
+    font-size: 18px;
+    font-weight: 400;
+    color: #185FA5;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.notif-dropdown-header a:hover {
+    color: #0a3d7a;
+    text-decoration: none;
+}
+
+.notif-item {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f5f5f5;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.notif-item.unread {
+    background: #EEF5FC;
+}
+
+.notif-item:hover {
+    background: #f0f4f8;
+}
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+.notif-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 15px;
+}
+
+.notif-icon.accept  { background: #EAF3DE; color: #3B6D11; }
+.notif-icon.reject  { background: #FCEBEB; color: #A32D2D; }
+.notif-icon.pending { background: #FAEEDA; color: #854F0B; }
+
+.notif-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 2px;
+    color: #1a1a1a;
+}
+
+.notif-desc {
+    font-size: 12px;
+    color: #555;
+    margin: 0 0 4px;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notif-time {
+    font-size: 11px;
+    color: #999;
+}
+
+.notif-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.notif-status-badge.accepted { background: #EAF3DE; color: #3B6D11; }
+.notif-status-badge.rejected { background: #FCEBEB; color: #A32D2D; }
+
+.notif-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.btn-terima {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid #C0DD97;
+    background: #EAF3DE;
+    color: #3B6D11;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.12s;
+}
+
+.btn-terima:hover { background: #C0DD97; }
+
+.btn-tolak {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid #F7C1C1;
+    background: #FCEBEB;
+    color: #A32D2D;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.12s;
+}
+
+.btn-tolak:hover { background: #F7C1C1; }
+
+.notif-empty {
+    padding: 24px 16px;
+    text-align: center;
+    color: #999;
+    font-size: 13px;
+}
+
+.notif-custom-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    z-index: 100000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: fadeInUp 0.3s ease;
+}
+
+.notif-custom-toast.success {
+    background: #22c55e;
+    color: white;
+}
+
+.notif-custom-toast.error {
+    background: #ef4444;
+    color: white;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

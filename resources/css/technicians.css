@@ -1,0 +1,379 @@
+.technicians-page {
+    padding: 0;
+}
+
+.page-header {
+    margin-bottom: 28px;
+}
+
+.page-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: #ffffff;
+    opacity: 0.9;
+}
+
+/* Grid 2 Kolom */
+.technicians-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.technicians-list-section {
+    background: transparent;
+}
+
+.technicians-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.technician-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.2s ease;
+    border: 1px solid #e8e8e8;
+    position: relative;
+}
+
+.technician-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #1b1fb8;
+}
+
+.technician-avatar {
+    width: 50px;
+    height: 50px;
+    background: #1b1fb8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.technician-avatar i {
+    font-size: 28px;
+    color: white;
+}
+
+.technician-avatar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-initial {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+.technician-info-card {
+    flex: 1;
+}
+
+.technician-name-card {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+}
+
+.technician-email-card {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 2px;
+}
+
+.technician-phone-card {
+    font-size: 12px;
+    color: #888;
+}
+
+.technician-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-edit, .btn-delete {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-edit {
+    background: #e8f0fe;
+    color: #1b1fb8;
+}
+
+.btn-edit:hover {
+    background: #1b1fb8;
+    color: white;
+}
+
+.btn-delete {
+    background: #fee2e2;
+    color: #dc3545;
+}
+
+.btn-delete:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.empty-technicians {
+    text-align: center;
+    padding: 60px;
+    background: white;
+    border-radius: 16px;
+}
+
+.empty-technicians i {
+    font-size: 64px;
+    color: #ccc;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.empty-technicians p {
+    color: #888;
+    font-size: 16px;
+}
+
+.form-section {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.form-header {
+    background: #f59e0b;
+    padding: 18px 24px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-header i {
+    font-size: 24px;
+}
+
+.form-header span {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.technician-form {
+    padding: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.form-control:focus {
+    border-color: #1b1fb8;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(27, 31, 184, 0.1);
+}
+
+.form-text {
+    font-size: 11px;
+    color: #888;
+    margin-top: 5px;
+    display: block;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-save, .btn-cancel {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-save {
+    background: #f59e0b;
+    color: white;
+}
+
+.btn-save:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+}
+
+.btn-cancel {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+.btn-cancel:hover {
+    background: #d6d8db;
+}
+
+.toast-notification {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+}
+
+.toast-success { background: #22c55e; }
+.toast-error   { background: #ef4444; }
+.toast-info    { background: #1b1fb8; }
+
+.confirm-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.confirm-modal.active { display: flex; }
+
+.confirm-modal-content {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 380px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.confirm-modal-header {
+    background: #ef4444;
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.confirm-modal-body {
+    padding: 24px 20px;
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+}
+
+.confirm-modal-body strong {
+    color: #111;
+}
+
+.confirm-modal-footer {
+    padding: 0 20px 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn-confirm-delete {
+    flex: 1;
+    padding: 11px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-confirm-delete:hover { background: #dc2626; }
+
+.btn-confirm-cancel {
+    flex: 1;
+    padding: 11px;
+    background: #e5e7eb;
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-confirm-cancel:hover { background: #d1d5db; }
+
+@media (max-width: 900px) {
+    .technicians-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
