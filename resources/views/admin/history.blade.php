@@ -50,7 +50,7 @@
                 $badgeText = 'Finished';
                 $taskStatus = 'completed';
                 
-                if(isset($task->status) && $task->status === 'canceled') {
+                if(isset($task->status) && ($task->status === 'canceled' || $task->status === 'rejected')) {
                     $badgeClass = 'badge-canceled';
                     $badgeText = 'Canceled';
                     $taskStatus = 'canceled';

@@ -1,3 +1,4 @@
+/* Container Halaman Tasks */
 .tasks-page {
     padding: 0;
 }
@@ -35,6 +36,7 @@
     gap: 20px;
 }
 
+/* Technician Card Styles */
 .technician-card {
     border-radius: 12px;
     padding: 20px;
@@ -128,6 +130,7 @@
     margin: 0;
 }
 
+/* Form Input Tugas Baru */
 .form-section {
     background: #fff;
     border-radius: 16px;
@@ -316,6 +319,7 @@
     font-size: 18px;
 }
 
+/* Bottom Sheet/Overlay Pilih Alamat */
 .overlay {
     display: none;
     position: fixed;
@@ -517,6 +521,7 @@
 .tasks-grid:has(.technicians-grid .empty-state) {
     grid-template-columns: 1fr;
 }
+
 .tasks-grid:has(.technicians-grid .empty-state) .technicians-section {
     grid-column: 1;
 }
@@ -525,13 +530,60 @@
     .tasks-grid {
         grid-template-columns: 1fr;
     }
+
     .technicians-grid {
         grid-template-columns: 1fr;
     }
+
     .technicians-grid .empty-state {
         grid-column: 1;
     }
+
     .tasks-grid:has(.technicians-grid .empty-state) {
         grid-template-columns: 1fr;
     }
+}
+
+.technicians-grid .empty-state .empty-sub {
+    font-size: 12px;
+    margin-top: 8px;
+    color: #aaa;
+}
+
+.tasks-grid:has(.technicians-grid .empty-state) {
+    grid-template-columns: 1fr;
+}
+
+.tasks-grid:has(.technicians-grid .empty-state) .technicians-section {
+    grid-column: 1;
+}
+
+@media (max-width: 760px) {
+    .tasks-grid {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 30px;
+    }
+
+    .technicians-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .technicians-grid .empty-state {
+        grid-column: 1;
+    }
+
+    .tasks-grid:has(.technicians-grid .empty-state) {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .technician-card { padding: 15px; }
+    .card-top { flex-direction: column; text-align: center; }
+    .btn-add { width: 100%; margin-top: 10px; }
+    .form-header { flex-direction: column; text-align: center; padding: 15px; }
+    .task-form { padding: 15px; }
+    .loc-row { flex-direction: column; text-align: center; gap: 8px; }
+    .btn-save { width: 100%; padding: 12px; font-size: 14px; }
 }

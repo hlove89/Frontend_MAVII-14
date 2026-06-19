@@ -1,3 +1,4 @@
+<!-- Halaman Lupa Password -->
 <!DOCTYPE html>
 <html lang="id">
 <head>

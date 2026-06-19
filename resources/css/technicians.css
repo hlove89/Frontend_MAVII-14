@@ -1,3 +1,4 @@
+/* Kartu & Form Manajemen Teknisi */
 .technicians-page {
     padding: 0;
 }
@@ -372,8 +373,37 @@
 
 .btn-confirm-cancel:hover { background: #d1d5db; }
 
-@media (max-width: 900px) {
-    .technicians-grid-2 {
-        grid-template-columns: 1fr;
+@media (max-width: 760px) {
+    .technicians-grid-2 { 
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 30px;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 600px) {
+    .technician-card { 
+        padding: 15px; 
+        flex-wrap: wrap;
+    }
+    .technician-info-card {
+        min-width: 150px;
+    }
+    .technician-actions { 
+        flex-direction: row; 
+        width: 100%; 
+        justify-content: flex-end;
+        padding-top: 10px;
+        border-top: 1px solid #f0f0f0;
+    }
+    .btn-edit, .btn-delete { 
+        width: 36px;
+        height: 36px; 
+    }
+    .form-header { 
+        flex-direction: column; 
+        text-align: center; 
+        gap: 8px;
     }
 }

@@ -7,7 +7,7 @@
 
     <div class="page-header">
         <h1 class="page-title">Dashboard Admin</h1>
-        <p class="page-subtitle">Ringkasan Pekerjaan Teknisi Hari Ini</p>
+        <p class="page-subtitle">Ringkasan Pekerjaan Teknisi</p>
     </div>
 
     <div class="card-container">

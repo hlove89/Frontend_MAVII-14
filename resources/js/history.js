@@ -1,5 +1,5 @@
-let currentTaskId   = null;
-let currentFilter   = 'all';
+let currentTaskId = null;
+let currentFilter = 'all';
 let currentTaskData = null;
 
 function escapeHtml(text) {
@@ -28,28 +28,30 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
-window.searchHistory = function(query) {
+// Fungsi pencarian riwayat
+window.searchHistory = function (query) {
     const q = query.toLowerCase().trim();
-    document.querySelectorAll('.history-card').forEach(function(card) {
+    document.querySelectorAll('.history-card').forEach(function (card) {
         const searchData = (card.dataset.search || '').toLowerCase();
         const status = card.dataset.status;
         let passFilter = (currentFilter === 'all') ||
-                         (currentFilter === 'finished' && status === 'completed') ||
-                         (currentFilter === 'canceled' && status === 'canceled');
+            (currentFilter === 'finished' && status === 'completed') ||
+            (currentFilter === 'canceled' && (status === 'canceled' || status === 'rejected'));
         const passSearch = q === '' || searchData.includes(q);
         card.style.display = (passFilter && passSearch) ? 'flex' : 'none';
     });
 }
 
-window.filterHistory = function(type, element) {
+// Filter riwayat berdasarkan status
+window.filterHistory = function (type, element) {
     currentFilter = type;
     const q = (document.getElementById('historySearchInput')?.value || '').toLowerCase().trim();
-    document.querySelectorAll('.history-card').forEach(function(card) {
+    document.querySelectorAll('.history-card').forEach(function (card) {
         const status = card.dataset.status;
         const searchData = (card.dataset.search || '').toLowerCase();
         let passFilter = (type === 'all') ||
-                         (type === 'finished' && status === 'completed') ||
-                         (type === 'canceled' && status === 'canceled');
+            (type === 'finished' && status === 'completed') ||
+            (type === 'canceled' && (status === 'canceled' || status === 'rejected'));
         const passSearch = q === '' || searchData.includes(q);
         card.style.display = (passFilter && passSearch) ? 'flex' : 'none';
     });
@@ -57,8 +59,9 @@ window.filterHistory = function(type, element) {
     element.classList.add('active');
 }
 
-window.showJobDetails = function(taskId) {
-    currentTaskId   = taskId;
+// Tampilkan panel detail pekerjaan
+window.showJobDetails = function (taskId) {
+    currentTaskId = taskId;
     currentTaskData = null;
 
     document.querySelectorAll('.history-card').forEach(card => card.classList.remove('selected'));
@@ -105,16 +108,16 @@ function renderJobDetails(data) {
             } else {
                 actions = [actions];
             }
-        } catch(e) {
+        } catch (e) {
             actions = [actions];
         }
     } else if (!Array.isArray(actions)) {
         actions = [];
     }
 
-    const isCanceled       = data.status === 'canceled';
+    const isCanceled = data.status === 'rejected' || data.status === 'canceled';
     const statusBadgeClass = isCanceled ? 'badge-canceled' : 'badge-finished';
-    const statusText       = isCanceled ? 'Canceled' : 'Finished';
+    const statusText = isCanceled ? 'Canceled' : 'Finished';
 
     const summaryEl = document.getElementById('panelSummary');
     if (summaryEl) {
@@ -124,7 +127,7 @@ function renderJobDetails(data) {
             <div class="panel-summary-info">
                 <div class="panel-summary-id">TK-${String(data.id).padStart(4, '0')}</div>
                 <div class="panel-summary-title">${escapeHtml(data.title)}</div>
-                <div class="panel-summary-date">${escapeHtml(data.completed_at || '-')}</div>
+                <div class="panel-summary-date">${escapeHtml(data.created_at || '-')}</div>
             </div>
             <span class="${statusBadgeClass}" style="padding:4px 10px;border-radius:30px;font-size:10px;font-weight:700;text-transform:uppercase;flex-shrink:0;">${statusText}</span>
         `;
@@ -199,21 +202,21 @@ function renderJobDetails(data) {
     `;
 }
 
-window.closeJobDetails = function() {
+window.closeJobDetails = function () {
     document.getElementById('jobDetailsPanel').classList.remove('active');
     document.querySelector('.history-container')?.classList.remove('panel-open');
     document.querySelectorAll('.history-card').forEach(c => c.classList.remove('selected'));
-    currentTaskId   = null;
+    currentTaskId = null;
     currentTaskData = null;
 }
 
-window.toggleDownloadDropdown = function() {
+window.toggleDownloadDropdown = function () {
     document.getElementById('downloadDropdown').classList.toggle('show');
 }
 
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const dropdown = document.getElementById('downloadDropdown');
-    const btn      = document.querySelector('.download-btn');
+    const btn = document.querySelector('.download-btn');
     if (dropdown && btn && !btn.contains(e.target) && !dropdown.contains(e.target)) {
         dropdown.classList.remove('show');
     }
@@ -221,19 +224,19 @@ document.addEventListener('click', function(e) {
 
 function getAllCardsData() {
     return Array.from(document.querySelectorAll('.history-card')).map(card => ({
-        id:    card.querySelector('.card-id')?.textContent?.trim() || '',
+        id: card.querySelector('.card-id')?.textContent?.trim() || '',
         title: card.querySelector('.card-title')?.textContent?.trim() || '',
-        cust:  card.querySelector('.card-customer')?.textContent?.trim() || '',
-        loc:   card.querySelector('.card-location')?.textContent?.replace(/\s+/g,' ').trim() || '',
-        date:  card.querySelector('.card-date')?.textContent?.replace(/\s+/g,' ').trim() || '',
-        tech:  card.querySelector('.card-tech')?.textContent?.replace(/\s+/g,' ').trim() || '',
+        cust: card.querySelector('.card-customer')?.textContent?.trim() || '',
+        loc: card.querySelector('.card-location')?.textContent?.replace(/\s+/g, ' ').trim() || '',
+        date: card.querySelector('.card-date')?.textContent?.replace(/\s+/g, ' ').trim() || '',
+        tech: card.querySelector('.card-tech')?.textContent?.replace(/\s+/g, ' ').trim() || '',
         badge: card.querySelector('.card-badge')?.textContent?.trim() || '',
     }));
 }
 
 function buildCsv(rows) {
-    const headers = ['ID Tugas','Jenis Gangguan','Nama Pelanggan','Lokasi','Tanggal Selesai','Teknisi','Status'];
-    const escape  = v => `"${String(v).replace(/"/g,'""')}"`;
+    const headers = ['ID Tugas', 'Jenis Gangguan', 'Nama Pelanggan', 'Lokasi', 'Tanggal Selesai', 'Teknisi', 'Status'];
+    const escape = v => `"${String(v).replace(/"/g, '""')}"`;
     return [
         headers.map(escape).join(','),
         ...rows.map(r => [r.id, r.title, r.cust, r.loc, r.date, r.tech, r.badge].map(escape).join(','))
@@ -242,15 +245,16 @@ function buildCsv(rows) {
 
 function downloadCsvBlob(csvContent, filename) {
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url  = URL.createObjectURL(blob);
-    const a    = Object.assign(document.createElement('a'), { href: url, download: filename });
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), { href: url, download: filename });
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
 
-window.downloadReport = function(type) {
+// Download laporan (CSV atau PDF)
+window.downloadReport = function (type) {
     const allRows = getAllCardsData();
     if (type === 'csv') {
         downloadCsvBlob(buildCsv(allRows), 'history-semua.csv');
@@ -264,34 +268,35 @@ window.downloadReport = function(type) {
     }
 }
 
-let dpMode     = 'date';
-let dpYear     = new Date().getFullYear();
-let dpMonth    = new Date().getMonth();
-let dpDay      = null;
+let dpMode = 'date';
+let dpYear = new Date().getFullYear();
+let dpMonth = new Date().getMonth();
+let dpDay = null;
 let dpSelMonth = null;
 
+// Buka modal datepicker
 function openDatePicker(mode) {
-    dpMode     = mode;
-    dpYear     = new Date().getFullYear();
-    dpMonth    = new Date().getMonth();
-    dpDay      = null;
+    dpMode = mode;
+    dpYear = new Date().getFullYear();
+    dpMonth = new Date().getMonth();
+    dpDay = null;
     dpSelMonth = null;
 
     const confirmBtn = document.getElementById('dpConfirmBtn');
     confirmBtn.disabled = true;
 
-    const calGrid   = document.getElementById('dpCalendarGrid');
+    const calGrid = document.getElementById('dpCalendarGrid');
     const monthGrid = document.getElementById('dpMonthGrid');
 
     if (mode === 'monthly') {
         document.getElementById('datePickerTitle').innerHTML = '<i class="bi bi-calendar-month"></i> Pilih Bulan';
-        calGrid.style.display   = 'none';
+        calGrid.style.display = 'none';
         monthGrid.style.display = 'block';
         dpRenderMonthNav();
         dpRenderMonthGrid();
     } else {
         document.getElementById('datePickerTitle').innerHTML = '<i class="bi bi-calendar-date"></i> Pilih Tanggal';
-        calGrid.style.display   = 'block';
+        calGrid.style.display = 'block';
         monthGrid.style.display = 'none';
         dpRenderCalendar();
     }
@@ -299,7 +304,7 @@ function openDatePicker(mode) {
     document.getElementById('datePickerModal').classList.add('active');
 }
 
-window.closeDatePicker = function() {
+window.closeDatePicker = function () {
     document.getElementById('datePickerModal').classList.remove('active');
 }
 
@@ -308,19 +313,19 @@ function dpRenderMonthNav() {
 }
 
 function dpRenderCalendar() {
-    const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     document.getElementById('dpMonthLabel').textContent = `${monthNames[dpMonth]} ${dpYear}`;
 
-    const today       = new Date();
-    const firstDay    = new Date(dpYear, dpMonth, 1).getDay();
+    const today = new Date();
+    const firstDay = new Date(dpYear, dpMonth, 1).getDay();
     const daysInMonth = new Date(dpYear, dpMonth + 1, 0).getDate();
-    const grid        = document.getElementById('dpDaysGrid');
-    grid.innerHTML    = '';
+    const grid = document.getElementById('dpDaysGrid');
+    grid.innerHTML = '';
 
     for (let i = 0; i < firstDay; i++) {
         const empty = document.createElement('button');
         empty.className = 'dp-empty';
-        empty.disabled  = true;
+        empty.disabled = true;
         grid.appendChild(empty);
     }
 
@@ -341,15 +346,15 @@ function dpRenderMonthGrid() {
     });
 }
 
-window.dpChangeMonth = function(dir) {
+window.dpChangeMonth = function (dir) {
     if (dpMode === 'monthly') {
         dpYear += dir;
         dpRenderMonthNav();
         dpRenderMonthGrid();
     } else {
         dpMonth += dir;
-        if (dpMonth > 11) { dpMonth = 0;  dpYear++; }
-        if (dpMonth < 0)  { dpMonth = 11; dpYear--; }
+        if (dpMonth > 11) { dpMonth = 0; dpYear++; }
+        if (dpMonth < 0) { dpMonth = 11; dpYear--; }
         dpDay = null;
         document.getElementById('dpConfirmBtn').disabled = true;
         dpRenderCalendar();
@@ -362,27 +367,27 @@ function dpSelectDay(d) {
     document.getElementById('dpConfirmBtn').disabled = false;
 }
 
-window.dpSelectMonth = function(m) {
+window.dpSelectMonth = function (m) {
     dpSelMonth = m;
     dpRenderMonthGrid();
     document.getElementById('dpConfirmBtn').disabled = false;
 }
 
-window.dpConfirm = function() {
-    const allRows    = getAllCardsData();
-    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+window.dpConfirm = function () {
+    const allRows = getAllCardsData();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     if (dpMode === 'monthly') {
         const filtered = allRows.filter(r => r.date.includes(monthNames[dpSelMonth]) && r.date.includes(String(dpYear)));
         if (!filtered.length) { showToast(`Tidak ada data untuk ${monthNames[dpSelMonth]} ${dpYear}`, 'warning'); return; }
-        downloadCsvBlob(buildCsv(filtered), `history-${dpYear}-${String(dpSelMonth + 1).padStart(2,'0')}.csv`);
+        downloadCsvBlob(buildCsv(filtered), `history-${dpYear}-${String(dpSelMonth + 1).padStart(2, '0')}.csv`);
     } else {
-        const dayStr   = String(dpDay).padStart(2,'0');
+        const dayStr = String(dpDay).padStart(2, '0');
         const filtered = allRows.filter(r =>
             r.date.includes(dayStr) && r.date.includes(monthNames[dpMonth]) && r.date.includes(String(dpYear))
         );
         if (!filtered.length) { showToast(`Tidak ada data untuk ${dayStr} ${monthNames[dpMonth]} ${dpYear}`, 'warning'); return; }
-        downloadCsvBlob(buildCsv(filtered), `history-${dpYear}-${String(dpMonth+1).padStart(2,'0')}-${dayStr}.csv`);
+        downloadCsvBlob(buildCsv(filtered), `history-${dpYear}-${String(dpMonth + 1).padStart(2, '0')}-${dayStr}.csv`);
     }
     closeDatePicker();
 }
@@ -394,15 +399,15 @@ function buildPdfHtml(data) {
             let parsed = JSON.parse(actions);
             if (Array.isArray(parsed)) actions = parsed;
             else actions = [actions];
-        } catch(e) { actions = [actions]; }
+        } catch (e) { actions = [actions]; }
     } else if (!Array.isArray(actions)) actions = [];
 
-    const isCanceled  = data.status === 'canceled';
+    const isCanceled = data.status === 'canceled' || data.status === 'rejected';
     const statusLabel = isCanceled ? 'Canceled' : 'Finished';
     const statusColor = isCanceled ? '#dc3545' : '#28a745';
-    const statusBg    = isCanceled ? '#f8d7da' : '#d4edda';
-    const statusTxt   = isCanceled ? '#721c24' : '#155724';
-    const taskCode    = `TK-${String(data.id).padStart(4, '0')}`;
+    const statusBg = isCanceled ? '#f8d7da' : '#d4edda';
+    const statusTxt = isCanceled ? '#721c24' : '#155724';
+    const taskCode = `TK-${String(data.id).padStart(4, '0')}`;
 
     const actionsText = (actions.length > 0) ? actions.join(', ') : 'Tidak ada tindakan';
     const dateStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -415,39 +420,41 @@ function buildPdfHtml(data) {
 
     const photosHtml = (data.photos && data.photos.length > 0)
         ? data.photos.map(p => {
-            const imgUrl = getFullUrl(p.url);
+            const imgUrl = p.base64 || getFullUrl(p.url);
             return `
-                <div style="margin-bottom: 20px; text-align: center;">
-                    <img src="${imgUrl}" style="max-width: 240px; width: auto; height: auto; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                    <div style="font-size: 12px; color: #555; margin-top: 8px;">${escapeHtml(p.note)}</div>
+                <div style="display: inline-block; text-align: center; margin-right: 15px; margin-bottom: 5px; vertical-align: top; width: 180px;">
+                    <img src="${imgUrl}" style="width: 180px; height: 110px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="font-size: 10px; color: #555; margin-top: 4px; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(p.note)}">${escapeHtml(p.note)}</div>
                 </div>
             `;
         }).join('')
-        : '<p style="color: #aaa;">Tidak ada foto</p>';
+        : '<p style="color: #aaa; font-size: 12px;">Tidak ada foto</p>';
 
     const pdfStyles = `
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: Arial, sans-serif;
-            font-size: 13px;
+            font-size: 12px;
             color: #333;
             background: #fff;
-            padding: 30px 35px;
+            padding: 20px 25px;
             word-wrap: break-word;
             overflow-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+            height: 1083px;
         }
-        .pdf-header { margin-bottom: 15px; }
-        .pdf-header h1 { font-size: 20px; font-weight: 700; color: #1b1fb8; margin-bottom: 2px; }
-        .pdf-header p  { font-size: 11px; color: #666; }
-        .status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; background: ${statusBg}; color: ${statusTxt}; margin-bottom: 15px; }
-        .section-title { font-size: 12px; font-weight: 700; color: #1b1fb8; border-bottom: 1.5px solid #1b1fb8; padding-bottom: 3px; margin: 15px 0 10px; text-transform: uppercase; letter-spacing: 0.3px; }
-        .info-row { display: flex; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f0f0f0; }
-        .info-label { width: 130px; color: #666; font-weight: 500; flex-shrink: 0; }
+        .pdf-header { margin-bottom: 10px; }
+        .pdf-header h1 { font-size: 18px; font-weight: 700; color: #1b1fb8; margin-bottom: 2px; }
+        .pdf-header p  { font-size: 10px; color: #666; }
+        .status-badge { display: inline-block; align-self: flex-start; padding: 2px 10px; border-radius: 20px; font-size: 9px; font-weight: 700; text-transform: uppercase; background: ${statusBg}; color: ${statusTxt}; margin-bottom: 10px; }
+        .section-title { font-size: 11px; font-weight: 700; color: #1b1fb8; border-bottom: 1.5px solid #1b1fb8; padding-bottom: 2px; margin: 10px 0 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .info-row { display: flex; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid #f0f0f0; }
+        .info-label { width: 120px; color: #666; font-weight: 500; flex-shrink: 0; }
         .info-value { flex: 1; color: #111; word-break: break-word; }
-        .photos-row { display: flex; flex-direction: column; gap: 15px; margin-top: 4px; }
-        .photos-row div { overflow: auto; }
-        .pdf-footer { margin-top: 30px; padding-top: 10px; border-top: 1px solid #e0e0e0; text-align: center; font-size: 10px; color: #999; }
-        @media print { body { padding: 15px 20px; } }
+        .photos-row { display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; margin-top: 2px; }
+        .pdf-footer { margin-top: auto; padding-top: 8px; border-top: 1px solid #e0e0e0; text-align: center; font-size: 9px; color: #999; }
+        @media print { body { padding: 10px 15px; } }
     `;
 
     const pdfBody = `
@@ -458,24 +465,24 @@ function buildPdfHtml(data) {
         <span class="status-badge">${statusLabel}</span>
 
         <div class="section-title">Informasi Pelanggan</div>
-        <div class="info-row"><div class="info-label">Nama</div><div class="info-value">${escapeHtml(data.customer_name||'-')}</div></div>
-        <div class="info-row"><div class="info-label">Telepon</div><div class="info-value">${escapeHtml(data.customer_phone||'-')}</div></div>
-        <div class="info-row"><div class="info-label">Lokasi</div><div class="info-value">${escapeHtml(data.address||'-')}</div></div>
-        <div class="info-row"><div class="info-label">Tanggal</div><div class="info-value">${escapeHtml(data.completed_at||'-')}</div></div>
+        <div class="info-row"><div class="info-label">Nama</div><div class="info-value">${escapeHtml(data.customer_name || '-')}</div></div>
+        <div class="info-row"><div class="info-label">Telepon</div><div class="info-value">${escapeHtml(data.customer_phone || '-')}</div></div>
+        <div class="info-row"><div class="info-label">Lokasi</div><div class="info-value">${escapeHtml(data.address || '-')}</div></div>
+        <div class="info-row"><div class="info-label">Tanggal</div><div class="info-value">${escapeHtml(data.completed_at || '-')}</div></div>
 
         <div class="section-title">Detail Pekerjaan</div>
         <div class="info-row"><div class="info-label">ID Tugas</div><div class="info-value">${taskCode}</div></div>
-        <div class="info-row"><div class="info-label">Jenis Gangguan</div><div class="info-value">${escapeHtml(data.title||'-')}</div></div>
+        <div class="info-row"><div class="info-label">Jenis Gangguan</div><div class="info-value">${escapeHtml(data.title || '-')}</div></div>
 
         <div class="section-title">Teknisi</div>
-        <div class="info-row"><div class="info-label">Nama</div><div class="info-value">${escapeHtml(data.technician_name||'-')}</div></div>
-        <div class="info-row"><div class="info-label">Telepon</div><div class="info-value">${escapeHtml(data.technician_phone||'-')}</div></div>
-        <div class="info-row"><div class="info-label">Email</div><div class="info-value">${escapeHtml(data.technician_email||'-')}</div></div>
+        <div class="info-row"><div class="info-label">Nama</div><div class="info-value">${escapeHtml(data.technician_name || '-')}</div></div>
+        <div class="info-row"><div class="info-label">Telepon</div><div class="info-value">${escapeHtml(data.technician_phone || '-')}</div></div>
+        <div class="info-row"><div class="info-label">Email</div><div class="info-value">${escapeHtml(data.technician_email || '-')}</div></div>
 
         <div class="section-title">Hasil dan Status</div>
         <div class="info-row"><div class="info-label">Bukti Foto</div><div class="info-value"><div class="photos-row">${photosHtml}</div></div></div>
         <div class="info-row"><div class="info-label">Tindakan</div><div class="info-value">${escapeHtml(actionsText)}</div></div>
-        <div class="info-row"><div class="info-label">Catatan</div><div class="info-value">${escapeHtml(data.catatan||'Tidak ada catatan')}</div></div>
+        <div class="info-row"><div class="info-label">Catatan</div><div class="info-value">${escapeHtml(data.catatan || 'Tidak ada catatan')}</div></div>
         <div class="info-row"><div class="info-label">Status Akhir</div><div class="info-value"><span style="font-weight:700;color:${statusColor};">${statusLabel}</span></div></div>
 
         <div class="pdf-footer">Dibuat oleh: MAVII Field Service Management System &bull; ${dateStr}</div>
@@ -492,19 +499,20 @@ function buildPdfHtml(data) {
 </html>`;
 }
 
-window.openShareModal = function() {
+// Buka modal share laporan
+window.openShareModal = function () {
     if (!currentTaskId) return;
     document.getElementById('shareModal').classList.add('active');
 }
 
-window.closeShareModal = function() {
+window.closeShareModal = function () {
     document.getElementById('shareModal').classList.remove('active');
 }
 
 function setBtnLoading(selector, isLoading, originalHtml) {
     const btn = document.querySelector(selector);
     if (!btn) return;
-    btn.disabled  = isLoading;
+    btn.disabled = isLoading;
     btn.innerHTML = isLoading ? '<i class="bi bi-hourglass-split"></i> Memproses...' : originalHtml;
 }
 
@@ -513,7 +521,7 @@ function loadScript(src) {
         if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
         const s = document.createElement('script');
         s.src = src;
-        s.onload  = resolve;
+        s.onload = resolve;
         s.onerror = () => reject(new Error(`Gagal load: ${src}`));
         document.head.appendChild(s);
     });
@@ -524,8 +532,8 @@ async function generatePdfBlob(data) {
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
 
     const { jsPDF } = window.jspdf;
-    const iframe    = document.createElement('iframe');
-    iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:794px;height:1200px;border:none;visibility:hidden;';
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:794px;height:1123px;border:none;visibility:hidden;';
     document.body.appendChild(iframe);
     iframe.contentDocument.open();
     iframe.contentDocument.write(buildPdfHtml(data));
@@ -539,13 +547,13 @@ async function generatePdfBlob(data) {
     document.body.removeChild(iframe);
 
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
-    const pdf     = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const pdfW    = pdf.internal.pageSize.getWidth();
-    const pdfH    = (canvas.height * pdfW) / canvas.width;
-    const pageH   = pdf.internal.pageSize.getHeight();
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pdfW = pdf.internal.pageSize.getWidth();
+    const pdfH = (canvas.height * pdfW) / canvas.width;
+    const pageH = pdf.internal.pageSize.getHeight();
 
-    if (pdfH <= pageH) {
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
+    if (pdfH <= pageH + 10) {
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, Math.min(pdfH, pageH));
     } else {
         let yOffset = 0;
         while (yOffset < pdfH) {
@@ -571,7 +579,7 @@ async function shareFileNative(data, filename, shareOptions) {
         return 'shared';
     }
     const url = URL.createObjectURL(pdfBlob);
-    const a   = Object.assign(document.createElement('a'), { href: url, download: filename });
+    const a = Object.assign(document.createElement('a'), { href: url, download: filename });
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -579,22 +587,22 @@ async function shareFileNative(data, filename, shareOptions) {
     return 'downloaded';
 }
 
-window.savePdf = async function() {
+window.savePdf = async function () {
     if (!currentTaskData) { showToast('Data belum dimuat.', 'warning'); return; }
-    const taskCode = `TK-${String(currentTaskData.id).padStart(4,'0')}`;
+    const taskCode = `TK-${String(currentTaskData.id).padStart(4, '0')}`;
     setBtnLoading('.share-btn-pdf', true, '<i class="bi bi-file-earmark-pdf-fill"></i> Simpan');
     try {
         const pdfBlob = await generatePdfBlob(currentTaskData);
         if (!pdfBlob || pdfBlob.size === 0) throw new Error('PDF kosong');
-        const url     = URL.createObjectURL(pdfBlob);
-        const a       = Object.assign(document.createElement('a'), { href: url, download: `laporan-${taskCode}.pdf` });
+        const url = URL.createObjectURL(pdfBlob);
+        const a = Object.assign(document.createElement('a'), { href: url, download: `laporan-${taskCode}.pdf` });
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         closeShareModal();
         showToast('PDF berhasil disimpan', 'success');
-    } catch(e) {
+    } catch (e) {
         console.error(e);
         showToast('Gagal membuat PDF. Coba refresh halaman.', 'error');
     } finally {
@@ -602,9 +610,10 @@ window.savePdf = async function() {
     }
 }
 
-window.shareViaWhatsApp = async function() {
+// Share laporan via WhatsApp
+window.shareViaWhatsApp = async function () {
     if (!currentTaskData) { showToast('Data belum dimuat.', 'warning'); return; }
-    const taskCode = `TK-${String(currentTaskData.id).padStart(4,'0')}`;
+    const taskCode = `TK-${String(currentTaskData.id).padStart(4, '0')}`;
     setBtnLoading('.share-btn-whatsapp', true, '<i class="bi bi-whatsapp"></i> WhatsApp');
     try {
         const result = await shareFileNative(currentTaskData, `laporan-${taskCode}.pdf`,
@@ -616,7 +625,7 @@ window.shareViaWhatsApp = async function() {
         } else {
             showToast('Laporan berhasil dibagikan', 'success');
         }
-    } catch(e) {
+    } catch (e) {
         if (e.name !== 'AbortError') {
             console.error(e);
             showToast(e.message || 'Gagal membagikan PDF.', 'error');
@@ -626,61 +635,59 @@ window.shareViaWhatsApp = async function() {
     }
 }
 
-window.shareViaEmail = async function() {
+window.shareViaEmail = function () {
     if (!currentTaskData) { showToast('Data belum dimuat.', 'warning'); return; }
-    const taskCode = `TK-${String(currentTaskData.id).padStart(4,'0')}`;
-    setBtnLoading('.share-btn-email', true, '<i class="bi bi-envelope-fill"></i> Email');
-    try {
-        let pdfBlob = await generatePdfBlob(currentTaskData);
-        if (!pdfBlob || pdfBlob.size === 0) {
-            pdfBlob = await generatePdfBlob(currentTaskData);
-            if (!pdfBlob || pdfBlob.size === 0) {
-                throw new Error('PDF kosong setelah dua kali percobaan');
+
+    const data = currentTaskData;
+    const taskCode = `TK-${String(data.id).padStart(4, '0')}`;
+
+    // Format tindakan
+    let actionsText = 'Tidak ada tindakan';
+    if (data.actions) {
+        if (Array.isArray(data.actions)) {
+            actionsText = data.actions.join(', ');
+        } else if (typeof data.actions === 'string') {
+            try {
+                const parsed = JSON.parse(data.actions);
+                actionsText = Array.isArray(parsed) ? parsed.join(', ') : data.actions;
+            } catch (e) {
+                actionsText = data.actions;
             }
         }
-        const pdfFile = new File([pdfBlob], `laporan-${taskCode}.pdf`, { type: 'application/pdf' });
-        if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-            await navigator.share({
-                title: `Laporan ${taskCode}`,
-                text: `Laporan Pekerjaan ${taskCode}`,
-                files: [pdfFile]
-            });
-            closeShareModal();
-            showToast('Laporan berhasil dibagikan', 'success');
-        } else {
-            const url = URL.createObjectURL(pdfBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `laporan-${taskCode}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            const subject = `Laporan Pekerjaan ${taskCode}`;
-            const body = `Halo,\n\nBerikut laporan pekerjaan ${taskCode}.\nFile PDF sudah terdownload, silakan lampirkan secara manual.\n\nSalam,\nMAVII FSMS`;
-            setTimeout(() => {
-                window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            }, 300);
-            closeShareModal();
-            showToast('PDF diunduh. Silakan lampirkan ke email secara manual.', 'success');
-        }
-    } catch(e) {
-        console.error(e);
-        showToast('Gagal membuat PDF. Coba simpan file manual.', 'error');
-    } finally {
-        setBtnLoading('.share-btn-email', false, '<i class="bi bi-envelope-fill"></i> Email');
     }
+
+    const subject = `Laporan Pekerjaan - ${data.customer_name || 'Pelanggan'} - MAVII`;
+
+    const body = `Yth. ${data.customer_name || 'Pelanggan'},
+
+Berikut adalah ringkasan laporan pekerjaan:
+
+Pelanggan: ${data.customer_name || '-'}
+Gangguan: ${data.title || '-'}
+Status: ${data.status === 'canceled' || data.status === 'rejected' ? 'Canceled' : 'Finished'}
+Teknisi: ${data.technician_name || '-'}
+Tanggal: ${data.completed_at || '-'}
+
+Tindakan: ${actionsText}
+Catatan: ${data.catatan || 'Tidak ada catatan'}
+
+Terima kasih.
+
+MAVII - Field Service Management`;
+
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    closeShareModal();
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('.filter-btn-all')?.classList.add('active');
     document.getElementById('jobDetailsPanel')?.classList.remove('active');
 
-    document.getElementById('shareModal')?.addEventListener('click', function(e) {
+    document.getElementById('shareModal')?.addEventListener('click', function (e) {
         if (e.target === this) closeShareModal();
     });
 
-    document.getElementById('datePickerModal')?.addEventListener('click', function(e) {
+    document.getElementById('datePickerModal')?.addEventListener('click', function (e) {
         if (e.target === this) closeDatePicker();
     });
 });
@@ -746,7 +753,7 @@ function showPhotoModal(imageUrl, note) {
     document.body.appendChild(modal);
 }
 
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const target = e.target;
     if (target.classList && target.classList.contains('bukti-foto-img')) {
         e.preventDefault();

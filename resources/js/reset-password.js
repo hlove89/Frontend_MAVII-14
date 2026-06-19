@@ -1,3 +1,4 @@
+// Fungsi toggle visibilitas password reset
 document.querySelectorAll('.toggle-password, .toggle-password-confirm').forEach(icon => {
     icon.addEventListener('click', function() {
         let input = this.previousElementSibling;

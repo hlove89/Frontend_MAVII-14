@@ -9,13 +9,14 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     @vite(['resources/css/app.css', 'resources/css/notification.css', 'resources/js/app.js', 'resources/js/notification.js'])
+
 </head>
 <body>
     <div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 100000;"></div>
 
 <div class="app">
-
-    <aside class="sidebar">
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <aside class="sidebar" id="sidebar">
         <div class="logo">
             <img src="{{ asset('assets/image/logo.png') }}" alt="Logo">
             <div class="logo-text">
@@ -67,7 +68,10 @@
 
     <main class="main">
         <header class="topbar">
-            <div class="topbar-left">
+            <div class="topbar-left" style="display: flex; align-items: center;">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="bi bi-list"></i>
+                </button>
                 @stack('topbar_left')
             </div>
             <div class="top-user">
@@ -104,7 +108,7 @@
                 </div>
                 <div class="welcome">
                     <span class="greet">Welcome,</span>
-                    <span class="user-name">{{ is_array(session('user')) ? (session('user')['name'] ?? 'Admin FSMS') : (session('user')->name ?? 'Admin FSMS') }}</span>
+                    <span class="user-name">{{ Str::limit(is_array(session('user')) ? (session('user')['name'] ?? 'Admin FSMS') : (session('user')->name ?? 'Admin FSMS'), 50, '...') }}</span>
                 </div>
             </div>
         </header>
@@ -130,31 +134,20 @@
     </div>
 </div>
 
-<script>
-    function showToast(message, type = 'success') {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-        const toast = document.createElement('div');
-        toast.className = `toast-notification toast-${type} show`;
-        toast.style.marginBottom = '10px';
-        toast.innerHTML = `
-            <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-circle-fill'}"></i>
-            ${message}
-        `;
-        container.appendChild(toast);
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    }
-
     @if(session('success'))
-        setTimeout(() => showToast("{{ session('success') }}", 'success'), 100);
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(() => window.showToast("{{ session('success') }}", 'success'), 100);
+            });
+        </script>
     @endif
     @if(session('error'))
-        setTimeout(() => showToast("{{ session('error') }}", 'error'), 100);
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(() => window.showToast("{{ session('error') }}", 'error'), 100);
+            });
+        </script>
     @endif
-</script>
 
 @stack('scripts')
 </body>

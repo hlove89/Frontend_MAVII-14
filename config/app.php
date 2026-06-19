@@ -46,6 +46,8 @@ return [
 
 
     'url' => env('APP_URL', 'http://localhost'),
+    
+    'api_url' => env('VITE_API_BASE_URL', 'https://api.mavii.my.id'),
 
     'asset_url' => env('ASSET_URL'),
 

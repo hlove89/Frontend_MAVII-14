@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class TrackingController extends Controller
 {
+    // Tampilkan monitoring tracking
     public function index()
     {
         $technicians = User::where('role', 'technician')
@@ -79,6 +80,7 @@ class TrackingController extends Controller
         ];
     }
 
+    // Tampilkan rute map
     public function show($id)
     {
         $task = Task::with('technician')->findOrFail($id);
@@ -99,6 +101,7 @@ class TrackingController extends Controller
         ]);
     }
 
+    // Update lokasi tracking manual
     public function updateLocation(Request $request, $id)
     {
         $task = Task::findOrFail($id);

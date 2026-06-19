@@ -121,6 +121,12 @@
 .notif-icon.reject  { background: #FCEBEB; color: #A32D2D; }
 .notif-icon.pending { background: #FAEEDA; color: #854F0B; }
 
+/* Tombol & Dropdown Notifikasi */
+.notif-bell {
+    flex: 1;
+    min-width: 0;
+}
+
 .notif-body {
     flex: 1;
     min-width: 0;

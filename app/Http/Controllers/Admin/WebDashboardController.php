@@ -8,32 +8,40 @@ use Illuminate\Support\Facades\Http;
 
 class WebDashboardController extends Controller
 {
+    // Tampilkan halaman utama
     public function mainPage()
     {
         $response = Http::withToken(session('access_token'))->get(env('VITE_API_BASE_URL') . '/api/admin/tracking');
         $rawPoints = $response->json('data') ?? [];
         $technicianPoints = collect($rawPoints)->map(function($p) {
+            $isBusy = !empty($p['current_task']);
+            // Gunakan koordinat dari database
+            $lat = isset($p['tech_latitude']) ? (float)$p['tech_latitude'] : -6.2088;
+            $lng = isset($p['tech_longitude']) ? (float)$p['tech_longitude'] : 106.8456;
+            
             return [
-                'lat' => $p['tech_latitude'],
-                'lng' => $p['tech_longitude'],
+                'lat' => $lat,
+                'lng' => $lng,
                 'label' => $p['name'],
-                'status' => $p['current_task'] ?? 'On Duty'
+                'status' => $isBusy ? 'Bertugas: ' . $p['current_task'] : 'Online (Tersedia)',
+                'is_busy' => $isBusy
             ];
         })->toArray();
         return view('admin.main_page', compact('technicianPoints'));
     }
 
+    // Tampilkan dashboard statistik
     public function dashboard()
     {
         $apiBaseUrl = env('VITE_API_BASE_URL');
         $token = session('access_token');
 
-        // Fetch Technicians for count
+
         $techResponse = Http::withToken($token)->get($apiBaseUrl . '/api/admin/technicians');
         $technicians = $techResponse->object()->technicians ?? [];
         $totalTechnicians = count($technicians);
 
-        // Fetch All Tasks for statistics
+
         $tasksResponse = Http::withToken($token)->get($apiBaseUrl . '/api/admin/tasks');
         $allTasks = collect($tasksResponse->object()->tasks ?? []);
 
@@ -42,8 +50,8 @@ class WebDashboardController extends Controller
         $progressTasks = $allTasks->whereIn('status', ['accepted', 'on-going'])->count();
         $totalTasks = $allTasks->count();
 
-        // Active Tasks (Progress) for the table
-        $activeTasks = $allTasks->whereIn('status', ['accepted', 'on-going'])->values();
+
+        $activeTasks = $allTasks->whereIn('status', ['assigned', 'accepted', 'on-going'])->values();
 
         return view('admin.dashboard', compact(
             'totalTechnicians', 
@@ -55,6 +63,7 @@ class WebDashboardController extends Controller
         ));
     }
 
+    // Tampilkan daftar teknisi
     public function technicians()
     {
         $response = Http::withToken(session('access_token'))->get(env('VITE_API_BASE_URL') . '/api/admin/technicians');
@@ -62,6 +71,7 @@ class WebDashboardController extends Controller
         return view('admin.technicians', ['technicians' => collect($technicians)]);
     }
 
+    // Tampilkan daftar task
     public function tasks()
     {
         $response = Http::withToken(session('access_token'))->get(env('VITE_API_BASE_URL') . '/api/admin/technicians');
@@ -69,36 +79,42 @@ class WebDashboardController extends Controller
         return view('admin.tasks', ['technicians' => collect($technicians)]);
     }
 
+    // Tampilkan tracking map
     public function tracking()
     {
         return view('admin.tracking');
     }
 
+    // Tampilkan riwayat task
     public function history()
     {
         $response = Http::withToken(session('access_token'))->get(env('VITE_API_BASE_URL') . '/api/admin/tasks');
         $tasks = collect($response->object()->tasks ?? [])->filter(function($task) {
-            return in_array($task->status ?? '', ['completed', 'canceled']);
+            return in_array($task->status ?? '', ['completed', 'canceled', 'rejected']);
         })->values();
         return view('admin.history', compact('tasks'));
     }
 
+    // Tampilkan galeri foto
     public function photoLibrary()
     {
         return view('admin.photo_library');
     }
 
+    // Unduh laporan
     public function downloadReport()
     {
         return redirect(env('VITE_API_BASE_URL') . '/api/admin/report/download');
     }
 
+    // Unduh CSV riwayat
     public function downloadHistory(Request $request)
     {
         $queryString = http_build_query($request->all());
         return redirect(env('VITE_API_BASE_URL') . '/api/admin/history/download?' . $queryString);
     }
 
+    // Ambil detail riwayat
     public function historyDetail($id)
     {
         $apiBaseUrl = env('VITE_API_BASE_URL');
@@ -113,7 +129,7 @@ class WebDashboardController extends Controller
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
 
-        // Format tindakan (actions) menjadi array
+        // Format actions ke array
         $actions = [];
         if (!empty($task->actions)) {
             $decoded = is_string($task->actions) ? json_decode($task->actions, true) : $task->actions;
@@ -124,14 +140,14 @@ class WebDashboardController extends Controller
             }
         }
 
-        // Map foto dari database (proofs) - Support format cPanel & Lokal
+        // Format proofs
         $photos = [];
         if (!empty($task->proofs)) {
             foreach ($task->proofs as $proof) {
                 $proof = (object) $proof;
                 $rawPath = $proof->photo_path;
                 
-                // Bersihkan path dari prefix cPanel yang sering muncul
+                // Bersihkan path foto
                 $cleanPath = ltrim($rawPath, '/');
                 $cleanPath = str_replace('public/', '', $cleanPath);
                 $cleanPath = str_replace('storage/', '', $cleanPath);
@@ -139,17 +155,36 @@ class WebDashboardController extends Controller
 
                 $photoUrl = rtrim($apiBaseUrl, '/') . '/storage/' . $cleanPath;
                 
+                // Konversi ke Base64 untuk PDF
+                $base64 = null;
+                try {
+                    $imgResponse = Http::timeout(3)->get($photoUrl);
+                    if ($imgResponse->successful()) {
+                        $imgType = $imgResponse->header('Content-Type') ?: 'image/jpeg';
+                        $base64 = 'data:' . $imgType . ';base64,' . base64_encode($imgResponse->body());
+                    }
+                } catch (\Exception $e) {
+
+                }
+
                 $photos[] = [
-                    'url'  => $photoUrl,
-                    'note' => $proof->note ?? 'Bukti Pekerjaan'
+                    'url'    => $photoUrl,
+                    'base64' => $base64,
+                    'note'   => $proof->note ?? 'Bukti Pekerjaan'
                 ];
             }
         }
 
-        // Format tanggal selesai agar serasi dengan UI original
-        $rawDate = $task->completed_at ?? $task->updated_at ?? null;
+        // Format tanggal selesai 
+        $rawDate = $task->completed_at ?? null;
         $completedAtFormatted = $rawDate 
             ? \Illuminate\Support\Carbon::parse($rawDate)->format('d M Y . H : i') 
+            : '-';
+
+        // Format tanggal tugas diberikan
+        $rawCreatedAt = $task->created_at ?? null;
+        $createdAtFormatted = $rawCreatedAt
+            ? \Illuminate\Support\Carbon::parse($rawCreatedAt)->format('d M Y . H : i')
             : '-';
 
         $formattedData = [
@@ -159,6 +194,7 @@ class WebDashboardController extends Controller
             'customer_name'    => $task->customer_name,
             'customer_phone'   => $task->customer_phone,
             'address'          => $task->address,
+            'created_at'       => $createdAtFormatted,
             'completed_at'     => $completedAtFormatted,
             'technician_name'  => $task->technician->name ?? '-',
             'technician_phone' => $task->technician->phone ?? '-',

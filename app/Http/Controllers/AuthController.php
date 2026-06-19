@@ -13,9 +13,10 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->apiUrl = env('VITE_API_BASE_URL', 'http://api.mavii.test');
+        $this->apiUrl = config('app.api_url');
     }
 
+    // Tampilkan halaman login
     public function showLogin()
     {
         if (session()->has('access_token')) {
@@ -25,6 +26,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    // Proses submit login
     public function login(Request $request)
     {
         $request->validate([
@@ -46,10 +48,20 @@ class AuthController extends Controller
 
             if ($response->getStatusCode() === 200 && (isset($body['token']) || isset($body['access_token']))) {
                 $token = $body['token'] ?? $body['access_token'];
-                // Simpan token dan data user ke session
+                $userData = $body['user'] ?? null;
+
+                // Tolak jika bukan admin
+                $userRole = is_array($userData) ? ($userData['role'] ?? '') : '';
+                if ($userRole !== 'admin') {
+                    return back()->withErrors([
+                        'email' => 'Akses ditolak. Hanya akun Admin yang dapat login ke halaman ini.',
+                    ]);
+                }
+
+                // Simpan ke session
                 session([
                     'access_token' => $token,
-                    'user' => $body['user'] ?? null
+                    'user' => $userData
                 ]);
 
                 Log::info('Login sukses via API', ['email' => $request->email]);
@@ -68,17 +80,20 @@ class AuthController extends Controller
         }
     }
 
+    // Proses logout admin
     public function logout(Request $request)
     {
         session()->forget(['access_token', 'user']);
         return redirect('/login');
     }
 
+    // Tampilkan form forgot password
     public function showForgotForm()
     {
         return view('auth.forgot-password');
     }
 
+    // Proses kirim link reset
     public function sendResetLink(Request $request)
     {
         $request->validate(['email' => 'required|email']);
@@ -86,7 +101,10 @@ class AuthController extends Controller
         try {
             $client = new Client();
             $response = $client->post($this->apiUrl . '/api/auth/forgot-password', [
-                'json' => ['email' => $request->email],
+                'json' => [
+                    'email'  => $request->email,
+                    'source' => 'web', // dari web admin
+                ],
                 'http_errors' => false
             ]);
 
@@ -103,11 +121,13 @@ class AuthController extends Controller
         }
     }
 
+    // Tampilkan form reset password
     public function showResetForm(Request $request, $token = null)
     {
         return view('auth.reset-password', ['token' => $token, 'email' => $request->email]);
     }
 
+    // Proses reset password
     public function resetPassword(Request $request)
     {
         $request->validate([

@@ -1,3 +1,4 @@
+/* Container Tracking Page */
 .tracking-page {
     padding: 0;
     background: transparent;
@@ -28,6 +29,7 @@
     gap: 15px;
 }
 
+/* Kartu Teknisi Tracking */
 .tech-card {
     background: #fff;
     border-radius: 24px;
@@ -37,7 +39,9 @@
     cursor: default;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     position: relative;
-    padding-bottom: 55px; /* Space for footer */
+    padding-bottom: 55px;
+    z-index: 1;
+    isolation: isolate;
 }
 
 .tech-card:hover {
@@ -148,6 +152,7 @@
     margin-bottom: 15px;
 }
 
+/* Status Badges */
 .status-badge {
     font-size: 13px;
     font-weight: 700;
@@ -233,6 +238,7 @@
 }
 
 /* Modal Peta Full Screen */
+/* Modal Peta Layar Penuh */
 .full-map-modal {
     display: none;
     position: fixed;
@@ -258,7 +264,7 @@
     border-radius: 24px;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
 .full-map-header {
@@ -283,7 +289,9 @@
     opacity: 0.8;
 }
 
-.close-map:hover { opacity: 1; }
+.close-map:hover {
+    opacity: 1;
+}
 
 #fullMapBody {
     width: 100%;
@@ -291,6 +299,7 @@
 }
 
 /* Modal Detail Pekerjaan */
+/* Modal Detail Pekerjaan / Tracking */
 .detail-modal {
     display: none;
     position: fixed;
@@ -316,7 +325,7 @@
     overflow: hidden;
     max-height: 85%;
     overflow-y: auto;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
 .modal-header {
@@ -347,7 +356,9 @@
     opacity: 0.8;
 }
 
-.modal-header .close:hover { opacity: 1; }
+.modal-header .close:hover {
+    opacity: 1;
+}
 
 .modal-body {
     padding: 25px;
@@ -392,11 +403,25 @@
 }
 
 .catatan-box {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 12px;
+    padding: 10px 0;
     font-size: 14px;
-    color: #555;
-    line-height: 1.6;
-    border: 1px solid #eee;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+    white-space: pre-wrap;
+}
+
+@media (max-width: 768px) {
+    .panels-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .full-map-content {
+        width: 95%;
+        height: 80%;
+    }
+
+    .detail-modal-content {
+        width: 95%;
+    }
 }

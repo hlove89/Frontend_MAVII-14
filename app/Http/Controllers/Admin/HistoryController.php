@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 class HistoryController extends Controller
 {
+    // Tampilkan halaman riwayat
     public function index()
     {
         $tasks = Task::with('technician')
@@ -19,6 +20,7 @@ class HistoryController extends Controller
         return view('admin.history', compact('tasks'));
     }
 
+    // Ambil detail riwayat
     public function detail($id)
     {
         $task = Task::with(['technician', 'proofs'])->findOrFail($id);
@@ -48,6 +50,7 @@ class HistoryController extends Controller
         ]);
     }
 
+    // Ekspor riwayat ke CSV
     public function export(Request $request)
     {
         $query = Task::with('technician')
@@ -128,6 +131,7 @@ class HistoryController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+    // Cetak detail ke PDF
     public function pdf($id)
     {
         $task = Task::with('technician')->findOrFail($id);

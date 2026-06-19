@@ -32,7 +32,7 @@ class NotificationController extends Controller
         $notifications = collect($data)->map(function ($n) {
             $n = (object) $n;
             
-            // Try to extract technician info from data if it exists as JSON
+            // Ekstrak info teknisi
             $extraData = is_string($n->data) ? json_decode($n->data, true) : ($n->data ?? []);
             $techName = $extraData['technician_name'] ?? ($n->title ?? 'System');
 
@@ -41,7 +41,7 @@ class NotificationController extends Controller
                 'task_id'         => $extraData['task_id'] ?? null,
                 'technician_name' => $techName,
                 'message'         => $n->message ?? '',
-                'status'          => $n->type ?? 'info',
+                'status'          => $n->type ?? 'info', 
                 'unread'          => !($n->is_read ?? false),
                 'time_ago'        => isset($n->created_at) ? Carbon::parse($n->created_at)->diffForHumans() : '-',
             ];

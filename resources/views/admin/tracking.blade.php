@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="{{ asset('css/tracking.css') }}">
+<link rel="stylesheet" href="{{ asset('css/tracking.css') }}?v={{ time() }}">
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <div class="tracking-page">
@@ -14,13 +14,11 @@
     </div>
 
     <div class="panels-grid" id="technicianContainer">
-        <!-- Data akan di-load via JavaScript -->
         <div class="loading-state" style="text-align: center; padding: 50px; width: 100%;">
             <p>Memuat data teknisi...</p>
         </div>
     </div>
 
-    <!-- Modal Detail -->
     <div id="detailModal" class="detail-modal">
         <div class="detail-modal-content">
             <div class="modal-header">
@@ -36,7 +34,6 @@
         </div>
     </div>
 
-    <!-- Modal Peta Full Screen -->
     <div id="fullMapModal" class="full-map-modal">
         <div class="full-map-content">
             <div class="full-map-header">
@@ -47,7 +44,7 @@
         </div>
     </div>
 </div>
-<script src="{{ asset('js/tracking.js') }}"></script>
+<script src="{{ asset('js/tracking.js') }}?v={{ time() }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         initTracking({

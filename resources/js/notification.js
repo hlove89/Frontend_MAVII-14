@@ -17,6 +17,7 @@
     dropdown.style.left = 'auto';
     dropdown.style.zIndex = '9999999';
 
+    // Update posisi dropdown notifikasi
     function updatePosition() {
         const rect = bellBtn.getBoundingClientRect();
         dropdown.style.top = (rect.bottom + 10) + 'px';
@@ -46,15 +47,30 @@
 
     markAllBtn.addEventListener('click', e => {
         e.preventDefault();
+        
+        // Cek jika tidak ada notifikasi
+        if (notifList.querySelector('.notif-empty')) return;
+
         fetch('/admin/notifications/read-all', {
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': csrfToken }
-        }).then(() => loadNotifications());
+        })
+        .then(() => {
+            loadNotifications();
+            showToast('Semua notifikasi ditandai telah dibaca', 'success');
+        })
+        .catch(() => {
+            showToast('Gagal menandai notifikasi', 'error');
+        });
     });
 
     if (clearAllBtn) {
         clearAllBtn.addEventListener('click', e => {
             e.preventDefault();
+
+            // Cek jika tidak ada notifikasi
+            if (notifList.querySelector('.notif-empty')) return;
+
             fetch('/admin/notifications/clear-all', {
                 method: 'POST',
                 headers: {
@@ -86,6 +102,7 @@
         setTimeout(() => toast.remove(), 3000);
     }
 
+    // Muat data notifikasi dari API
     function loadNotifications() {
         fetch('/admin/notifications')
             .then(r => r.json())
@@ -103,6 +120,7 @@
         badge.style.display = count > 0 ? 'flex' : 'none';
     }
 
+    // Render list notifikasi ke HTML
     function renderNotifications(items) {
         if (!items || items.length === 0) {
             notifList.innerHTML = '<div class="notif-empty">Tidak ada notifikasi.</div>';

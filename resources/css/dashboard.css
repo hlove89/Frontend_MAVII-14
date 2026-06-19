@@ -21,6 +21,28 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
+/* Layout & Widget Dashboard Admin */
+.dashboard-page {
+    padding: 0;
+}
+
+.page-header {
+    margin-bottom: 28px;
+}
+
+.page-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: #ffffff;
+    opacity: 0.9;
+}
+
 .card-icon {
     width: 52px;
     height: 52px;
@@ -193,13 +215,29 @@ tbody tr:hover {
 @media (max-width: 760px) {
     .card-container {
         grid-template-columns: 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .card {
+        padding: 16px 14px;
     }
     
     .table-box {
         overflow-x: auto;
+        border-radius: 12px;
     }
     
     table {
-        min-width: 600px;
+        min-width: 500px;
+    }
+    
+    th, td {
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+    
+    .card-number {
+        font-size: 26px;
     }
 }

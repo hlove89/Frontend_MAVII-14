@@ -1,3 +1,4 @@
+/* Styling Global Aplikasi */
 * {
     margin: 0;
     padding: 0;
@@ -17,50 +18,51 @@ body {
 }
 
 .sidebar {
-    width: 260px;
+    width: 245px;
     background: #1b1fb8;
     color: white;
     position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
+    border-right: 4px solid #fffbfb;
     z-index: 100;
     display: flex;
     flex-direction: column;
 }
 
 .logo {
-    height: 66px;
-    background: #1b1fb8;
+    height: 60px;
+    background: #dddddd;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     padding: 0 16px;
     gap: 12px;
+    border-bottom: 4px solid #1b1fb8;
     width: 100%;
     box-sizing: border-box;
 }
 
 .logo img {
-    width: 40px;
+    width: 38px;
     height: auto;
     display: block;
     flex-shrink: 0;
-    filter: brightness(0) invert(1);
 }
 
 .logo-text {
-    color: #ffffff;
-    font-size: 12px;
+    color: #000000;
+    font-size: 9px;
     font-weight: 800;
-    line-height: 1.3;
+    line-height: 1.2;
     text-align: left;
 }
 
 .logo-text small {
     display: block;
-    color: #ffffff;
+    color: #000000;
     font-size: 8px;
     font-weight: 600;
     margin-top: 2px;
@@ -80,17 +82,17 @@ body {
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 14px 18px;
+    gap: 14px;
+    padding: 12px 16px;
     font-size: 14px;
     transition: .2s;
-    border-radius: 16px;
-    margin: 6px 0;
+    border-radius: 12px;
+    margin: 4px 0;
 }
 
 .menu a.active,
 .menu a:hover {
-    background: rgba(255,255,255,.18);
+    background: rgba(255, 255, 255, .18);
     transform: translateX(2px);
 }
 
@@ -112,13 +114,13 @@ body {
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 14px 18px;
-    font-size: 14px;
+    gap: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
     font-weight: 400;
     transition: .2s;
-    border-radius: 16px;
-    margin: 6px 0;
+    border-radius: 12px;
+    margin: 3px 0;
     line-height: 1;
 }
 
@@ -130,8 +132,8 @@ body {
 
 .logout-menu a i {
     color: #ffffff !important;
-    font-size: 18px;          
-    min-width: 22px;          
+    font-size: 16px;
+    min-width: 20px;
     text-align: center;
     display: flex;
     align-items: center;
@@ -150,7 +152,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 9999;
     justify-content: center;
     align-items: center;
@@ -163,7 +165,7 @@ body {
     width: 90%;
     max-width: 360px;
     text-align: center;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 }
 
 .logout-modal-icon {
@@ -236,31 +238,31 @@ body {
 }
 
 .main {
-    margin-left: 260px;
-    width: calc(100% - 260px);
+    margin-left: 245px;
+    width: calc(100% - 245px);
     min-height: 100vh;
-    background: #1b1fb8;
 }
 
 .topbar {
-    height: 66px;
-    background: #1b1fb8;
+    height: 60px;
+    background: #dddddd;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between !important;
     padding: 0 28px;
     position: fixed;
     top: 0;
-    left: 260px;
+    left: 245px;
     right: 0;
     z-index: 99;
+    border-bottom: 4px solid #1b1fb8;
 }
 
 .top-user {
     display: flex;
     align-items: center;
     gap: 18px;
-    color: #ffffff;
+    color: #111;
 }
 
 .divider-line {
@@ -272,12 +274,11 @@ body {
 
 .bell-icon {
     font-size: 18px;
-    color: #ffffff;
 }
 
 .avatar {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -295,8 +296,8 @@ body {
 }
 
 .avatar-icon-default {
-    width: 44px;
-    height: 44px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background: #1b1fb8;
     display: flex;
@@ -306,7 +307,7 @@ body {
 }
 
 .avatar-icon-default i {
-    font-size: 26px;
+    font-size: 20px;
     color: white;
 }
 
@@ -318,18 +319,19 @@ body {
 }
 
 .welcome .greet {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.8);
+    font-size: 11px;
+    color: #444444;
     font-weight: 500;
 }
 
 .user-name {
     font-weight: bold;
-    color: #ffffff;
+    color: #111;
+    font-size: 13px;
 }
 
 .content {
-    padding: 90px 24px 40px;
+    padding: 80px 24px 40px;
     color: white;
     display: flex;
     flex-direction: column;
@@ -361,18 +363,66 @@ body {
         margin-left: 0;
         width: 100%;
     }
+
     .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        border-right: 0;
+        position: fixed;
+        width: 250px;
+        height: 100vh;
+        border-right: none;
+        z-index: 9999;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
     }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
     .topbar {
-        position: relative;
         left: 0;
         width: 100%;
     }
+
     .content {
-        padding: 20px 16px 20px;
+        padding: 80px 16px 20px;
+    }
+
+    .menu {
+        overflow-y: auto;
+    }
+}
+
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9998;
+}
+
+.mobile-overlay.active {
+    display: block;
+}
+
+.mobile-menu-toggle {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 22px;
+    color: #111;
+    cursor: pointer;
+    margin-right: 15px;
+    padding: 4px 8px;
+    display: none !important;
+}
+
+@media (max-width: 760px) {
+    .mobile-menu-toggle {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
     }
 }

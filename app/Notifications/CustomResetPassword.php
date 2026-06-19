@@ -7,13 +7,10 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class CustomResetPassword extends ResetPassword
 {
+    // Link reset selalu mengarah ke web admin 
     public function toMail($notifiable)
     {
-        if ($notifiable->role === 'admin') {
-            $url = url(config('app.url') . '/reset-password?token=' . $this->token . '&email=' . urlencode($notifiable->email));
-        } else {
-            $url = 'https://mavii.my.id/reset-password?token=' . $this->token . '&email=' . urlencode($notifiable->email);
-        }
+        $url = url('/reset-password?token=' . $this->token . '&email=' . urlencode($notifiable->email));
 
         return (new MailMessage)
             ->subject('Reset Password')

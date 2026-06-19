@@ -1,3 +1,4 @@
+// Siapkan form untuk edit teknisi
 window.editTechnician = function(id, name, email, phone) {
     const formHeader = document.getElementById('formHeader');
     if (formHeader) {
@@ -26,6 +27,7 @@ window.editTechnician = function(id, name, email, phone) {
     setTimeout(() => { formSection.style.boxShadow = ''; }, 1000);
 }
 
+// Reset form ke mode tambah teknisi baru
 window.resetForm = function() {
     const formHeader = document.getElementById('formHeader');
     if (formHeader) {
@@ -49,27 +51,8 @@ window.resetForm = function() {
     document.getElementById('password').style.borderColor = '';
 }
 
-function showToast(message, type = 'success') {
-    const old = document.getElementById('toastNotif');
-    if (old) old.remove();
-    const icons = {
-        success: 'check-circle-fill',
-        error:   'x-circle-fill',
-        warning: 'exclamation-triangle-fill',
-        info:    'info-circle-fill'
-    };
-    const toast = document.createElement('div');
-    toast.id = 'toastNotif';
-    toast.className = `toast-notification toast-${type}`;
-    toast.innerHTML = `<i class="bi bi-${icons[type] || icons.info}"></i> ${message}`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-    }, 4000);
-}
 
+// Validasi kekuatan/panjang password
 function validatePassword() {
     const passwordInput = document.getElementById('password');
     const isEditMode    = document.getElementById('formMethod').value === 'PUT';
@@ -91,17 +74,20 @@ function validatePassword() {
 
 let deleteTargetId = null;
 
+// Tampilkan modal konfirmasi hapus
 window.deleteTechnician = function(id, name) {
     deleteTargetId = String(id);
     document.getElementById('deleteTargetName').textContent = name;
     document.getElementById('confirmDeleteModal').classList.add('active');
 }
 
+// Tutup modal konfirmasi hapus
 function closeConfirmModal() {
     document.getElementById('confirmDeleteModal').classList.remove('active');
     // JANGAN reset deleteTargetId di sini
 }
 
+// Hapus elemen teknisi dari tampilan UI
 function removeCardFromDOM(id) {
     let card = null;
     document.querySelectorAll('.technician-card').forEach(c => {
@@ -132,10 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('passwordHint').textContent = 'Minimal 6 karakter';
     document.getElementById('password').setAttribute('required', 'required');
 
-    const successMsg = document.querySelector('meta[name="flash-success"]');
-    const errorMsg   = document.querySelector('meta[name="flash-error"]');
-    if (successMsg) showToast(successMsg.content, 'success');
-    if (errorMsg)   showToast(errorMsg.content, 'error');
 
     document.getElementById('technicianForm').addEventListener('submit', function(e) {
         if (!validatePassword()) e.preventDefault();
@@ -168,8 +150,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Content-Type': 'application/json',
             }
         })
-        .then(res => res.json())
+        .then(async res => {
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                return res.json();
+            } else {
+                // If not JSON, likely a redirect to login or error page
+                if (res.status === 401 || res.status === 419) {
+                    location.reload();
+                    return;
+                }
+                throw new Error("Invalid response from server");
+            }
+        })
         .then(data => {
+            if (!data) return;
             if (data.success) {
                 showToast('Teknisi berhasil dihapus!', 'success');
             } else {
@@ -177,7 +172,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 setTimeout(() => location.reload(), 1500);
             }
         })
-        .catch(() => {
+        .catch(err => {
+            console.error('Delete error:', err);
             showToast('Terjadi kesalahan, coba lagi', 'error');
             setTimeout(() => location.reload(), 1500);
         });

@@ -18,8 +18,6 @@
         <p class="page-subtitle">buat dan tugaskan pekerjaan baru dengan mudah</p>
     </div>
 
-    @if(session('success')) <meta name="flash-success" content="{{ session('success') }}"> @endif
-    @if(session('error')) <meta name="flash-error" content="{{ session('error') }}"> @endif
 
     <div class="tasks-grid">
         <div class="technicians-section">
@@ -91,7 +89,7 @@
                 </div>
                 <div class="form-group">
                     <label>Telepon :</label>
-                    <input type="text" name="customer_phone" class="form-control" placeholder="Nomor telepon pelanggan">
+                    <input type="tel" id="customer_phone" name="customer_phone" class="form-control" placeholder="Nomor telepon pelanggan" pattern="[0-9]*" inputmode="numeric" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
                 <div class="form-group">
                     <label>Alamat :</label>

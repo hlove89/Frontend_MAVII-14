@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('content')
-@vite(['resources/css/profile.css'])
+@vite(['resources/css/profile.css', 'resources/js/profile.js'])
 
 <div class="profile-page">
     <div class="profile-container">
@@ -20,15 +20,15 @@
         <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data" id="profileForm">
             @csrf @method('PUT')
             <div class="profile-layout">
-                <!-- KIRI: FORM UPDATE DATA -->
                 <div class="profile-form-wrapper">
                     <div class="form-group">
-                        <label>Nama Lengkap</label>
-                        <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
+                        <label>Full Name <span style="font-size:11px; color:#999; font-weight:400;"></span></label>
+                        <input type="text" name="name" id="nameInput" class="form-control" value="{{ old('name', $user->name) }}" required maxlength="50" oninput="updateNameCounter()">
+                        <small id="nameCounter" style="color:#888; font-size:11px; float:right; margin-top:4px;">{{ strlen(old('name', $user->name)) }}/50</small>
                     </div>
 
                     <div class="form-group">
-                        <label>Peran</label>
+                        <label>Role</label>
                         <input type="text" class="form-control" value="{{ $user->role == 'admin' ? 'Admin' : 'Teknisi' }}" readonly disabled>
                     </div>
 
@@ -38,8 +38,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Nomor Telepon</label>
-                        <input type="text" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}">
+                        <label>Nomor Telepon <span style="font-size:11px; color:#999; font-weight:400;"></span></label>
+                        <input type="tel" name="phone" id="phoneInput" class="form-control" value="{{ old('phone', $user->phone) }}" pattern="[0-9]*" inputmode="numeric" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="contoh: 081234567890">
                     </div>
 
                     <div class="form-group">
@@ -92,30 +92,6 @@
             </div>
         </form>
 
-        <script>
-            document.getElementById('avatarInput').addEventListener('change', function(e) {
-                if (e.target.files && e.target.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        const preview = document.getElementById('avatarPreview');
-                        preview.innerHTML = `<img src="${event.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            });
-
-            document.getElementById('profileForm').addEventListener('submit', function(e) {
-                const pass = document.getElementById('passwordInput').value;
-                if (pass && pass.length < 6) {
-                    e.preventDefault();
-                    if (typeof showToast === 'function') {
-                        showToast('Password minimal 6 karakter', 'error');
-                    } else {
-                        alert('Password minimal 6 karakter');
-                    }
-                }
-            });
-        </script>
     </div>
 </div>
 @endsection

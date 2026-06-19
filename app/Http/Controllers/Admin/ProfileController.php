@@ -23,7 +23,7 @@ class ProfileController extends Controller
         $apiBaseUrl = env('VITE_API_BASE_URL');
         $token = session('access_token');
 
-        // Gunakan multipart untuk semua data agar konsisten
+        // Set multipart
         $multipart = [];
         $fields = ['name', 'email', 'phone', 'password', 'password_confirmation'];
         
@@ -44,7 +44,7 @@ class ProfileController extends Controller
             ];
         }
 
-        // Kirim request POST dengan spoofing PUT
+        // Request POST dengan _method PUT
         $response = Http::withToken($token)
             ->asMultipart()
             ->post($apiBaseUrl . '/api/auth/profile?_method=PUT', $multipart);

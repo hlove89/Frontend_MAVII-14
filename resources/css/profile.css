@@ -1,3 +1,4 @@
+/* Container & Form Edit Profil */
 .profile-page {
     padding: 0;
     display: flex;
@@ -9,8 +10,8 @@
 .profile-container {
     background: #ffffff;
     border-radius: 20px;
-    padding: 35px 40px;
-    max-width: 1000px;
+    padding: 35px;
+    max-width: 880px;
     width: 100%;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
@@ -21,7 +22,7 @@
 }
 
 .profile-title {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
     color: #1b1fb8;
     margin-bottom: 5px;
@@ -49,7 +50,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;    
-    padding-top: 60px;          
+    padding-top: 40px;          
 }
 
 .avatar-container {
@@ -57,8 +58,8 @@
 }
 
 .avatar-circle {
-    width: 220px;
-    height: 220px;
+    width: 200px;
+    height: 200px;
     background: #1b1fb8;
     border-radius: 50%;
     display: flex;
@@ -70,7 +71,7 @@
 }
 
 .avatar-circle i {
-    font-size: 140px;
+    font-size: 130px;
     color: white;
     line-height: 1;
 }
@@ -113,18 +114,18 @@
 
 .form-group label {
     display: block;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
     color: #333;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .form-control {
     width: 100%;
-    padding: 12px 15px;
+    padding: 10px 14px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: 13px;
     transition: all 0.2s;
     font-family: inherit;
 }
@@ -151,8 +152,8 @@
     color: white;
     border: none;
     border-radius: 10px;
-    padding: 12px 28px;
-    font-size: 14px;
+    padding: 10px 24px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -168,16 +169,23 @@
 
 @media (max-width: 800px) {
     .profile-layout {
-        flex-direction: column;
+        flex-direction: column-reverse;
+        gap: 30px;
     }
     .profile-container {
-        padding: 25px 20px;
+        padding: 20px;
     }
     .avatar-circle {
-        width: 150px;
-        height: 150px;
+        width: 120px;
+        height: 120px;
     }
     .avatar-circle i {
-        font-size: 80px;
+        font-size: 60px;
+    }
+    .btn-save {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+        font-size: 14px;
     }
 }

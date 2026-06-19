@@ -84,7 +84,7 @@
                 
                 <div class="form-group">
                     <label>Nomor Telepon</label>
-                    <input type="text" name="phone" id="phone" class="form-control" placeholder="Nomor telepon" required>
+                    <input type="tel" name="phone" id="phone" class="form-control" placeholder="Nomor telepon" required pattern="[0-9]*" inputmode="numeric" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
                 
                 <div class="form-group" id="passwordGroup">
@@ -105,12 +105,6 @@
         </div>
     </div>
 
-    @if(session('success'))
-    <meta name="flash-success" content="{{ session('success') }}">
-    @endif
-    @if(session('error'))
-    <meta name="flash-error" content="{{ session('error') }}">
-    @endif
 
     <div id="confirmDeleteModal" class="confirm-modal">
         <div class="confirm-modal-content">
@@ -130,5 +124,15 @@
             </div>
         </div>
     </div>
+
+    @if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @foreach ($errors->all() as $error)
+                showToast("{{ $error }}", 'error');
+            @endforeach
+        });
+    </script>
+    @endif
 </div>
 @endsection

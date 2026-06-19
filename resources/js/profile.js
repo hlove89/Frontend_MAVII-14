@@ -1,91 +1,65 @@
-function previewAndSubmit(file, avatarPreview, form) {
-    if (!file) return;
-    
-    if (!file.type.startsWith('image/')) {
-        alert('File harus berupa gambar!');
-        return false;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-        alert('Ukuran file maksimal 5MB!');
-        return false;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        avatarPreview.innerHTML = '';
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.objectFit = 'cover';
-        avatarPreview.appendChild(img);
-    };
-    reader.readAsDataURL(file);
-    
-    return true;
-}
-
-function showToast(message, type = 'success') {
-    const old = document.getElementById('toastNotif');
-    if (old) old.remove();
-
-    const toast = document.createElement('div');
-    toast.id = 'toastNotif';
-    toast.className = `toast-notification toast-${type}`;
-    toast.innerHTML = `
-        <i class="bi bi-${type === 'success' ? 'check-circle-fill' : type === 'error' ? 'x-circle-fill' : 'info-circle-fill'}"></i>
-        ${message}
-    `;
-    document.body.appendChild(toast);
-
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-
-    const profileForm = document.querySelector('.profile-form');
-    if (profileForm) {
-        profileForm.addEventListener('submit', function(e) {
-            const passwordInput = profileForm.querySelector('input[name="password"]');
-            const password = passwordInput ? passwordInput.value : '';
-
-            if (password.length > 0 && password.length < 6) {
-                e.preventDefault();
-                showToast('Password minimal harus 6 karakter!', 'error');
-                passwordInput.focus();
-                return false;
+    const avatarInput = document.getElementById('avatarInput');
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('avatarPreview');
+                    if(preview) {
+                        preview.innerHTML = `<img src="${event.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    }
+                };
+                reader.readAsDataURL(e.target.files[0]);
             }
         });
     }
-    
-    const uploadBtn = document.getElementById('uploadBtn');
-    const avatarInput = document.getElementById('avatarInput');
-    const avatarPreview = document.getElementById('avatarPreview');
-    const avatarForm = document.getElementById('avatarForm');
-    const successMsg = document.querySelector('meta[name="flash-success"]');
-    const errorMsg   = document.querySelector('meta[name="flash-error"]');
-    if (successMsg) showToast(successMsg.content, 'success');
-    if (errorMsg)   showToast(errorMsg.content, 'error');
-    
-    if (uploadBtn && avatarInput) {
-        uploadBtn.addEventListener('click', function() {
-            avatarInput.click();
-        });
-    }
-    
-    if (avatarInput && avatarForm) {
-        avatarInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const isValid = previewAndSubmit(file, avatarPreview, avatarForm);
-                if (isValid) {
-                    avatarForm.submit();
+
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        profileForm.addEventListener('submit', function(e) {
+            const passInput = document.getElementById('passwordInput');
+            const pass = passInput ? passInput.value : '';
+            
+            const nameInput = document.getElementById('nameInput');
+            const nameVal = nameInput ? nameInput.value.trim() : '';
+
+            if (!nameVal) {
+                e.preventDefault();
+                if (typeof window.showToast === 'function') {
+                    window.showToast('Nama tidak boleh kosong', 'error');
+                } else {
+                    alert('Nama tidak boleh kosong');
+                }
+                return;
+            }
+            if (nameVal.length > 50) {
+                e.preventDefault();
+                if (typeof window.showToast === 'function') {
+                    window.showToast('Nama maksimal 50 karakter', 'error');
+                } else {
+                    alert('Nama maksimal 50 karakter');
+                }
+                return;
+            }
+            if (pass && pass.length < 6) {
+                e.preventDefault();
+                if (typeof window.showToast === 'function') {
+                    window.showToast('Password minimal 6 karakter', 'error');
+                } else {
+                    alert('Password minimal 6 karakter');
                 }
             }
         });
     }
 });
+
+window.updateNameCounter = function() {
+    const input = document.getElementById('nameInput');
+    const counter = document.getElementById('nameCounter');
+    if(input && counter) {
+        const len = input.value.length;
+        counter.textContent = len + '/50';
+        counter.style.color = len >= 50 ? '#e53e3e' : '#888';
+    }
+}
