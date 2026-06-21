@@ -6,7 +6,7 @@
 <div class="main-page">
 
     <div class="main-page-header">
-        <h1>Halaman Utama</h1>
+        <h1>Main Page</h1>
     </div>
 
     <div class="main-page-actions">

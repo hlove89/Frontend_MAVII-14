@@ -44,9 +44,12 @@ class HistoryController extends Controller
             'actions'          => $task->actions ?? [],
             'catatan'          => $task->catatan ?? $task->notes ?? null,
             'photos'           => $photos,
+            'accepted_at'      => ($task->accepted_at ?? $task->created_at)
+                ? Carbon::parse($task->accepted_at ?? $task->created_at, 'UTC')->timezone('Asia/Jakarta')->format('d M Y . H : i')
+                : '-',
             'completed_at'     => $task->completed_at
-                ? Carbon::parse($task->completed_at)->format('d M Y . H : i')
-                : Carbon::parse($task->updated_at)->format('d M Y . H : i'),
+                ? Carbon::parse($task->completed_at, 'UTC')->timezone('Asia/Jakarta')->format('d M Y . H : i')
+                : Carbon::parse($task->updated_at, 'UTC')->timezone('Asia/Jakarta')->format('d M Y . H : i'),
         ]);
     }
 
@@ -99,8 +102,8 @@ class HistoryController extends Controller
 
             foreach ($tasks as $task) {
                 $completedAt = $task->completed_at
-                    ? Carbon::parse($task->completed_at)->format('d/m/Y H:i')
-                    : Carbon::parse($task->updated_at)->format('d/m/Y H:i');
+                    ? Carbon::parse($task->completed_at, 'UTC')->timezone('Asia/Jakarta')->format('d/m/Y H:i')
+                    : Carbon::parse($task->updated_at, 'UTC')->timezone('Asia/Jakarta')->format('d/m/Y H:i');
 
                 $statusLabel = $task->status === 'rejected' ? 'Ditolak' : 'Selesai';
 
@@ -151,8 +154,8 @@ class HistoryController extends Controller
 
         $statusLabel = $task->status === 'rejected' ? 'Ditolak' : 'Selesai';
         $completedAt = $task->completed_at
-            ? Carbon::parse($task->completed_at)->translatedFormat('d F Y, H:i')
-            : Carbon::parse($task->updated_at)->translatedFormat('d F Y, H:i');
+            ? Carbon::parse($task->completed_at, 'UTC')->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i')
+            : Carbon::parse($task->updated_at, 'UTC')->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i');
 
         $html = $this->buildPdfHtml($task, $photos, $actions, $statusLabel, $completedAt);
 

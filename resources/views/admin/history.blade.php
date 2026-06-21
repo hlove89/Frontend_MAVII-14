@@ -83,7 +83,7 @@
                 <div class="card-footer">
                     <span class="card-date">
                         <i class="bi bi-calendar3"></i>
-                        {{ \Carbon\Carbon::parse($task->completed_at ?? $task->updated_at)->format('d M Y . H : i') }}
+                        {{ \Carbon\Carbon::parse($task->completed_at ?? $task->updated_at, 'UTC')->timezone('Asia/Jakarta')->format('d M Y . H : i') }}
                     </span>
                     <span class="card-tech">
                         <i class="bi bi-person-circle"></i>

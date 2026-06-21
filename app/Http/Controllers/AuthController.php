@@ -37,6 +37,9 @@ class AuthController extends Controller
         try {
             $client = new Client();
             $response = $client->post($this->apiUrl . '/api/auth/login', [
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
                 'json' => [
                     'email' => $request->email,
                     'password' => $request->password,
@@ -68,8 +71,16 @@ class AuthController extends Controller
                 return redirect()->route('admin.main-page');
             }
 
+            $errorMessage = $body['message'] ?? 'Email atau password salah.';
+            if (isset($body['errors']) && is_array($body['errors'])) {
+                $firstError = reset($body['errors']);
+                if (is_array($firstError) && isset($firstError[0])) {
+                    $errorMessage = $firstError[0];
+                }
+            }
+
             return back()->withErrors([
-                'email' => $body['message'] ?? 'Email atau password salah.',
+                'email' => $errorMessage,
             ]);
 
         } catch (\Exception $e) {
@@ -101,6 +112,9 @@ class AuthController extends Controller
         try {
             $client = new Client();
             $response = $client->post($this->apiUrl . '/api/auth/forgot-password', [
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
                 'json' => [
                     'email'  => $request->email,
                     'source' => 'web', // dari web admin
@@ -114,7 +128,15 @@ class AuthController extends Controller
                 return back()->with('status', $body['message'] ?? 'Link reset password telah dikirim ke email Anda.');
             }
 
-            return back()->withErrors(['email' => $body['message'] ?? 'Gagal mengirim link reset password.']);
+            $errorMessage = $body['message'] ?? 'Gagal mengirim link reset password.';
+            if (isset($body['errors']) && is_array($body['errors'])) {
+                $firstError = reset($body['errors']);
+                if (is_array($firstError) && isset($firstError[0])) {
+                    $errorMessage = $firstError[0];
+                }
+            }
+
+            return back()->withErrors(['email' => $errorMessage]);
 
         } catch (\Exception $e) {
             return back()->withErrors(['email' => 'Gagal terhubung ke server backend.']);
@@ -139,6 +161,9 @@ class AuthController extends Controller
         try {
             $client = new Client();
             $response = $client->post($this->apiUrl . '/api/auth/reset-password', [
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
                 'json' => [
                     'token' => $request->token,
                     'email' => $request->email,
@@ -154,7 +179,15 @@ class AuthController extends Controller
                 return redirect()->route('login')->with('status', 'Password berhasil direset. Silakan login.');
             }
 
-            return back()->withErrors(['email' => $body['message'] ?? 'Gagal meriset password.']);
+            $errorMessage = $body['message'] ?? 'Gagal meriset password.';
+            if (isset($body['errors']) && is_array($body['errors'])) {
+                $firstError = reset($body['errors']);
+                if (is_array($firstError) && isset($firstError[0])) {
+                    $errorMessage = $firstError[0];
+                }
+            }
+
+            return back()->withErrors(['email' => $errorMessage]);
 
         } catch (\Exception $e) {
             return back()->withErrors(['email' => 'Gagal terhubung ke server backend.']);

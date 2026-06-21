@@ -178,13 +178,13 @@ class WebDashboardController extends Controller
         // Format tanggal selesai 
         $rawDate = $task->completed_at ?? null;
         $completedAtFormatted = $rawDate 
-            ? \Illuminate\Support\Carbon::parse($rawDate)->format('d M Y . H : i') 
+            ? \Illuminate\Support\Carbon::parse($rawDate, 'UTC')->timezone('Asia/Jakarta')->format('d M Y . H : i') 
             : '-';
 
-        // Format tanggal tugas diberikan
-        $rawCreatedAt = $task->created_at ?? null;
-        $createdAtFormatted = $rawCreatedAt
-            ? \Illuminate\Support\Carbon::parse($rawCreatedAt)->format('d M Y . H : i')
+        // Format tanggal tugas diterima
+        $rawAcceptedAt = $task->accepted_at ?? $task->created_at ?? null;
+        $acceptedAtFormatted = $rawAcceptedAt
+            ? \Illuminate\Support\Carbon::parse($rawAcceptedAt, 'UTC')->timezone('Asia/Jakarta')->format('d M Y . H : i')
             : '-';
 
         $formattedData = [
@@ -194,7 +194,7 @@ class WebDashboardController extends Controller
             'customer_name'    => $task->customer_name,
             'customer_phone'   => $task->customer_phone,
             'address'          => $task->address,
-            'created_at'       => $createdAtFormatted,
+            'accepted_at'      => $acceptedAtFormatted,
             'completed_at'     => $completedAtFormatted,
             'technician_name'  => $task->technician->name ?? '-',
             'technician_phone' => $task->technician->phone ?? '-',

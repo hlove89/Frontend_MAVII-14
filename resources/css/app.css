@@ -367,7 +367,6 @@ body {
     .sidebar {
         position: fixed;
         width: 250px;
-        height: 100vh;
         border-right: none;
         z-index: 9999;
         transform: translateX(-100%);

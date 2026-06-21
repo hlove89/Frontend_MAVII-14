@@ -127,7 +127,7 @@ function renderJobDetails(data) {
             <div class="panel-summary-info">
                 <div class="panel-summary-id">TK-${String(data.id).padStart(4, '0')}</div>
                 <div class="panel-summary-title">${escapeHtml(data.title)}</div>
-                <div class="panel-summary-date">${escapeHtml(data.created_at || '-')}</div>
+                <div class="panel-summary-date">${escapeHtml(data.accepted_at || '-')}</div>
             </div>
             <span class="${statusBadgeClass}" style="padding:4px 10px;border-radius:30px;font-size:10px;font-weight:700;text-transform:uppercase;flex-shrink:0;">${statusText}</span>
         `;
